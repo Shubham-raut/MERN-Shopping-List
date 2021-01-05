@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Container, ListGroup, Button, ListGroupItem } from "reactstrap";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { getItems, deleteItem } from "../actions/itemActions";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect } from 'react';
+import { Container, ListGroup, Button, ListGroupItem } from 'reactstrap';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { getItems, deleteItem } from '../actions/itemActions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ShoppingList = () => {
   const items = useSelector((state) => state.item.items);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const dispatch = useDispatch();
 
   const onDeleteClick = (id) => {
@@ -24,14 +25,16 @@ const ShoppingList = () => {
           {items.map(({ _id, name }) => (
             <CSSTransition key={_id} timeout={500} classNames="fade">
               <ListGroupItem>
-                <Button
-                  className="remove-btn"
-                  color="danger"
-                  size="sm"
-                  onClick={() => onDeleteClick(_id)}
-                >
-                  &times;
-                </Button>
+                {isAuthenticated ? (
+                  <Button
+                    className="remove-btn"
+                    color="danger"
+                    size="sm"
+                    onClick={() => onDeleteClick(_id)}
+                  >
+                    &times;
+                  </Button>
+                ) : null}
                 {name}
               </ListGroupItem>
             </CSSTransition>

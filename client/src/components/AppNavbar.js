@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Collapse,
   Navbar,
@@ -7,11 +7,15 @@ import {
   Nav,
   NavItem,
   Container,
-  NavLink,
-} from "reactstrap";
+} from 'reactstrap';
+import Logout from './auth/Logout';
+import RegisterModal from './auth/RegisterModal';
+import LoginModal from './auth/LoginModal';
+import { useSelector } from 'react-redux';
 
 const AppNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   const toggle = () => {
     setIsOpen((isOpen) => !isOpen);
@@ -24,9 +28,27 @@ const AppNavbar = () => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ml-auto" navbar>
-            <NavItem>
-              <NavLink href="https://github.com/shubham-raut">github</NavLink>
-            </NavItem>
+            {!isAuthenticated ? (
+              <>
+                <NavItem>
+                  <RegisterModal />
+                </NavItem>
+                <NavItem>
+                  <LoginModal />
+                </NavItem>
+              </>
+            ) : (
+              <>
+                <NavItem>
+                  <span className="navbar-text mr-3">
+                    <b>{user ? `Welcome ${user.name.slice(0, 15)}` : ''}</b>
+                  </span>
+                </NavItem>
+                <NavItem>
+                  <Logout />
+                </NavItem>
+              </>
+            )}
           </Nav>
         </Collapse>
       </Container>

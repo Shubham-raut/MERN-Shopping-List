@@ -3,7 +3,7 @@ import {
   ADD_ITEMS,
   DELETE_ITEMS,
   ITEMS_LOADING,
-} from "../actions/types";
+} from '../actions/types';
 
 const initialState = {
   items: [],
@@ -22,7 +22,7 @@ const itemReducer = (state = initialState, action) => {
     case ADD_ITEMS:
       return {
         ...state,
-        items: [...state.items, action.payload],
+        items: [action.payload, ...state.items],
       };
 
     case DELETE_ITEMS:
