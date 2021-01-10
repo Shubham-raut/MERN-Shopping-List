@@ -12,8 +12,8 @@ import {
   NavLink,
   Alert,
 } from 'reactstrap';
-import { login } from '../../actions/authActions';
-import { clearErrors } from '../../actions/errorAction';
+import { login } from '../../slices/authSlice';
+import { clearErrors } from '../../slices/errorSlice';
 
 const LoginModal = () => {
   const [modal, setModal] = useState(false);

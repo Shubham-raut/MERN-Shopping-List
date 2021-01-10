@@ -1,35 +1,74 @@
+import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { returnErrors } from './errorAction';
+import { returnErrors } from './errorSlice';
 
-import {
-  USER_LOADED,
-  USER_LOADING,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT_SUCCESS,
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-} from './types';
+const success = (state, action) => {
+  localStorage.setItem('token', action.payload.token);
+  state.isAuthenticated = true;
+  state.isLoading = false;
+  state.token = action.payload.token;
+  state.user = action.payload.user;
+};
+
+const fail = (state) => {
+  localStorage.removeItem('token');
+  state.token = null;
+  state.user = null;
+  state.isAuthenticated = false;
+  state.isLoading = false;
+};
+
+export const authSlice = createSlice({
+  name: 'auth',
+  initialState: {
+    token: localStorage.getItem('token'),
+    isAuthenticated: null,
+    isLoading: false,
+    user: null,
+  },
+  reducers: {
+    userLoading: (state) => {
+      state.isLoading = true;
+    },
+
+    userLoaded: (state, action) => {
+      state.isAuthenticated = true;
+      state.isLoading = false;
+      state.user = action.payload;
+    },
+
+    loginSuccess: success,
+    registerSuccess: success,
+
+    authError: fail,
+    loginFail: fail,
+    logout: fail,
+    registerFail: fail,
+  },
+});
+
+export const {
+  userLoading,
+  userLoaded,
+  loginSuccess,
+  registerSuccess,
+  authError,
+  loginFail,
+  logout,
+  registerFail,
+} = authSlice.actions;
 
 // Check token & load user
 export const loadUser = () => (dispatch, getState) => {
   // User loading
-  dispatch({ type: USER_LOADING });
+  dispatch(userLoading());
 
   axios
     .get('/api/auth/user', tokenConfig(getState))
-    .then((res) =>
-      dispatch({
-        type: USER_LOADED,
-        payload: res.data,
-      })
-    )
+    .then((res) => dispatch(userLoaded(res.data)))
     .catch((err) => {
       dispatch(returnErrors(err.response.data, err.response.status));
-      dispatch({
-        type: AUTH_ERROR,
-      });
+      dispatch(authError());
     });
 };
 
@@ -47,14 +86,9 @@ export const register = ({ name, email, password }) => (dispatch) => {
 
   axios
     .post('/api/users', body, config)
-    .then((res) =>
-      dispatch({
-        type: REGISTER_SUCCESS,
-        payload: res.data,
-      })
-    )
+    .then((res) => dispatch(registerSuccess(res.data)))
     .catch((err) => {
-      dispatch({ type: REGISTER_FAIL });
+      dispatch(registerFail());
       dispatch(
         returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL')
       );
@@ -75,32 +109,19 @@ export const login = ({ email, password }) => (dispatch) => {
 
   axios
     .post('/api/auth', body, config)
-    .then((res) =>
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: res.data,
-      })
-    )
+    .then((res) => dispatch(loginSuccess(res.data)))
     .catch((err) => {
-      dispatch({ type: LOGIN_FAIL });
+      dispatch(loginFail);
       dispatch(
         returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL')
       );
     });
 };
 
-// logout use
-export const logout = () => {
-  return {
-    type: LOGOUT_SUCCESS,
-  };
-};
-
 // setup config/headers and token
 export const tokenConfig = (getState) => {
   // get token from localStorage
   const token = getState().auth.token;
-
   // Headers
   const config = {
     headers: {
@@ -115,3 +136,5 @@ export const tokenConfig = (getState) => {
 
   return config;
 };
+
+export default authSlice.reducer;

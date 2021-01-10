@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { loadUser } from './actions/authActions';
+import { loadUser } from './slices/authSlice';
 
 function App() {
   const dispatch = useDispatch();

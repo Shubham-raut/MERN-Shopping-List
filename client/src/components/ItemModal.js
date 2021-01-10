@@ -10,7 +10,7 @@ import {
   Label,
   Input,
 } from 'reactstrap';
-import { addItem } from '../actions/itemActions';
+import { addItems } from '../slices/itemSlice';
 
 const ItemModal = () => {
   const [modal, setModal] = useState(false);
@@ -29,7 +29,7 @@ const ItemModal = () => {
   const submit = (e) => {
     e.preventDefault();
     dispatch(
-      addItem({
+      addItems({
         name: name,
       })
     );

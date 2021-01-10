@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'reactstrap';
-import { logout } from '../../actions/authActions';
+import { logout } from '../../slices/authSlice';
 import { useDispatch } from 'react-redux';
 
 const Logout = () => {

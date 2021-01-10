@@ -12,8 +12,8 @@ import {
   NavLink,
   Alert,
 } from 'reactstrap';
-import { register } from '../../actions/authActions';
-import { clearErrors } from '../../actions/errorAction';
+import { register } from '../../slices/authSlice';
+import { clearErrors } from '../../slices/errorSlice';
 const RegisterModal = () => {
   const [modal, setModal] = useState(false);
   const [data, setData] = useState({

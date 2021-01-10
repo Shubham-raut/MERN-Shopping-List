@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Container, ListGroup, Button, ListGroupItem } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { getItems, deleteItem } from '../actions/itemActions';
+import { getItems, deleteItem } from '../slices/itemSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ShoppingList = () => {
